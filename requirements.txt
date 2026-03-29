@@ -5,6 +5,6 @@ requests
 pdfplumber
 beautifulsoup4
 lxml
-sentence-transformers
+openai
 faiss-cpu
 anthropic

@@ -1,43 +1,70 @@
 """
-Embed text chunks with SentenceTransformer and persist a FAISS index + chunk list.
+Embed text chunks via OpenAI and persist a FAISS index + chunk list.
 """
 
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 from typing import List, Optional, Tuple
 
 import faiss
 import numpy as np
-from sentence_transformers import SentenceTransformer
+from dotenv import load_dotenv
+from openai import OpenAI
 
-MODEL_NAME = "all-MiniLM-L6-v2"
+MODEL_NAME = "text-embedding-3-small"
+EMBED_BATCH = 128
 
 _BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(_BASE_DIR / ".env")
+
 INDEX_PATH = _BASE_DIR / "index.faiss"
 CHUNKS_PATH = _BASE_DIR / "chunks.json"
 
-_model: Optional[SentenceTransformer] = None
+_client: Optional[OpenAI] = None
 
 
-def _ensure_model() -> SentenceTransformer:
-    global _model
-    if _model is None:
+def _ensure_client() -> OpenAI:
+    global _client
+    if _client is None:
         print("Loading embedding model...")
-        _model = SentenceTransformer(MODEL_NAME)
-    return _model
+        key = os.environ.get("OPENAI_API_KEY")
+        if not key:
+            raise RuntimeError("OPENAI_API_KEY is not set. Add it to your .env file.")
+        _client = OpenAI(api_key=key)
+    return _client
+
+
+def _l2_normalize_rows(arr: np.ndarray) -> np.ndarray:
+    norms = np.linalg.norm(arr, axis=1, keepdims=True)
+    norms = np.maximum(norms, 1e-12)
+    return (arr / norms).astype(np.float32)
+
+
+def _embed_texts(client: OpenAI, texts: List[str]) -> np.ndarray:
+    """Return L2-normalized embedding matrix (float32) for cosine / inner product search."""
+    rows: List[List[float]] = []
+    for i in range(0, len(texts), EMBED_BATCH):
+        batch = texts[i : i + EMBED_BATCH]
+        resp = client.embeddings.create(model=MODEL_NAME, input=batch)
+        ordered = sorted(resp.data, key=lambda d: d.index)
+        for d in ordered:
+            rows.append(d.embedding)
+    arr = np.asarray(rows, dtype=np.float32)
+    return _l2_normalize_rows(arr)
 
 
 def embed_query(text: str) -> np.ndarray:
     """Embed a single query string with the same model used for chunks (normalized)."""
-    model = _ensure_model()
-    vec = model.encode(
-        [text],
-        convert_to_numpy=True,
-        normalize_embeddings=True,
-    )
-    return np.asarray(vec[0], dtype=np.float32)
+    client = _ensure_client()
+    resp = client.embeddings.create(model=MODEL_NAME, input=text)
+    vec = np.asarray(resp.data[0].embedding, dtype=np.float32)
+    n = float(np.linalg.norm(vec))
+    if n < 1e-12:
+        return vec
+    return (vec / n).astype(np.float32)
 
 
 def embed_and_store(chunks: List[str]) -> None:
@@ -48,15 +75,9 @@ def embed_and_store(chunks: List[str]) -> None:
     if not chunks:
         raise ValueError("chunks must not be empty.")
 
-    model = _ensure_model()
+    client = _ensure_client()
     print(f"Embedding {len(chunks)} chunks...")
-    embeddings = model.encode(
-        chunks,
-        convert_to_numpy=True,
-        normalize_embeddings=True,
-        show_progress_bar=False,
-    )
-    embeddings = np.asarray(embeddings, dtype=np.float32)
+    embeddings = _embed_texts(client, chunks)
 
     dim = embeddings.shape[1]
     index = faiss.IndexFlatIP(dim)
