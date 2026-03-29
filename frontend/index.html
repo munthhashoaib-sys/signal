@@ -371,8 +371,6 @@
 
   <script>
     (function () {
-      const API = "http://localhost:8000/generate";
-
       const form = document.getElementById("signal-form");
       const submitBtn = document.getElementById("submit-btn");
       const loadingEl = document.getElementById("loading");
@@ -479,7 +477,7 @@
         showLoading(true);
 
         try {
-          const res = await fetch(API, {
+          const response = await fetch("https://signal-m4zs.onrender.com/generate", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -490,11 +488,11 @@
             }),
           });
 
-          const data = await res.json().catch(function () {
+          const data = await response.json().catch(function () {
             return null;
           });
 
-          if (!res.ok) {
+          if (!response.ok) {
             throw new Error(parseErrorDetail(data) || "Request failed.");
           }
 
@@ -504,7 +502,7 @@
 
           renderResults(data.openers);
         } catch (err) {
-          showError(err.message || "Network error. Is the API running at http://localhost:8000?");
+          showError(err.message || "Network error. Check your connection and try again.");
         } finally {
           showLoading(false);
         }
