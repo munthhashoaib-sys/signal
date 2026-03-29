@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Signal — 10-K intelligence for sales reps</title>
+  <style>
+    :root {
+      --text: #1a1a1a;
+      --text-muted: #5c5c5c;
+      --border: #e8e8e8;
+      --accent: #0d47a1;
+      --accent-hover: #0a3d8a;
+      --error-bg: #fef2f2;
+      --error-text: #991b1b;
+      --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.04);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #fff;
+      color: var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrap {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 4rem;
+    }
+
+    header {
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h1 {
+      margin: 0 0 0.5rem;
+      font-family: Georgia, "Iowan Old Style", "Palatino Linotype", Palatino, serif;
+      font-size: 2.25rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+
+    .tagline {
+      margin: 0;
+      font-size: 1.0625rem;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .field-hint {
+      font-weight: 400;
+      text-transform: none;
+      letter-spacing: 0;
+      font-size: 0.75rem;
+      color: #888;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      font-family: inherit;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: #fafafa;
+      color: var(--text);
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    input[type="text"]::placeholder {
+      color: #9a9a9a;
+    }
+
+    input[type="text"]:hover {
+      background: #fff;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: var(--accent);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(13, 71, 161, 0.12);
+    }
+
+    .actions {
+      margin-top: 0.5rem;
+    }
+
+    button[type="submit"] {
+      appearance: none;
+      border: none;
+      background: var(--accent);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 600;
+      font-family: inherit;
+      padding: 0.875rem 1.75rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.05s;
+    }
+
+    button[type="submit"]:hover:not(:disabled) {
+      background: var(--accent-hover);
+    }
+
+    button[type="submit"]:active:not(:disabled) {
+      transform: scale(0.99);
+    }
+
+    button[type="submit"]:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .loading {
+      display: none;
+      margin-top: 2.5rem;
+      padding: 1.5rem 1.25rem;
+      background: #f7f9fc;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-muted);
+      font-size: 0.9375rem;
+      line-height: 1.6;
+    }
+
+    .loading.is-visible {
+      display: block;
+    }
+
+    .loading strong {
+      display: block;
+      color: var(--text);
+      margin-bottom: 0.35rem;
+      font-weight: 600;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 1rem;
+      height: 1rem;
+      border: 2px solid #d0d7e2;
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: -0.125rem;
+      margin-right: 0.5rem;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .error {
+      display: none;
+      margin-top: 2rem;
+      padding: 1rem 1.25rem;
+      background: var(--error-bg);
+      border: 1px solid #fecaca;
+      border-radius: 8px;
+      color: var(--error-text);
+      font-size: 0.9375rem;
+      line-height: 1.55;
+    }
+
+    .error.is-visible {
+      display: block;
+    }
+
+    .results {
+      margin-top: 3rem;
+    }
+
+    .results h2 {
+      margin: 0 0 1.5rem;
+      font-family: Georgia, "Iowan Old Style", "Palatino Linotype", Palatino, serif;
+      font-size: 1.375rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .card {
+      position: relative;
+      margin-bottom: 1.25rem;
+      padding: 1.5rem 1.5rem 1.5rem 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #fff;
+      box-shadow: var(--card-shadow);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .badge {
+      flex-shrink: 0;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      background: #f0f0f0;
+      padding: 0.35rem 0.6rem;
+      border-radius: 4px;
+    }
+
+    .signal {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--accent);
+      background: rgba(13, 71, 161, 0.08);
+      padding: 0.35rem 0.65rem;
+      border-radius: 4px;
+      max-width: 100%;
+    }
+
+    .opener-text {
+      margin: 0 0 1rem;
+      font-size: 1.0625rem;
+      line-height: 1.65;
+      color: var(--text);
+    }
+
+    .why {
+      margin: 0 0 1.25rem;
+      font-size: 0.9375rem;
+      line-height: 1.55;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .copy-btn {
+      appearance: none;
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      font-family: inherit;
+      padding: 0.5rem 0.9rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .copy-btn:hover {
+      background: #fafafa;
+      border-color: #d0d0d0;
+    }
+
+    .copy-btn.copied {
+      border-color: #86efac;
+      background: #f0fdf4;
+      color: #166534;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Signal</h1>
+      <p class="tagline">10-K intelligence for sales reps</p>
+    </header>
+
+    <main>
+      <form id="signal-form" novalidate>
+        <div>
+          <label for="company_name">
+            Company name <span class="field-hint">(required)</span>
+          </label>
+          <input
+            id="company_name"
+            name="company_name"
+            type="text"
+            required
+            autocomplete="organization"
+            placeholder="e.g. Apple, Rivian, Salesforce"
+          />
+        </div>
+        <div>
+          <label for="prospect_name">
+            Prospect name <span class="field-hint">(required)</span>
+          </label>
+          <input
+            id="prospect_name"
+            name="prospect_name"
+            type="text"
+            required
+            autocomplete="name"
+            placeholder="e.g. Sarah Chen"
+          />
+        </div>
+        <div>
+          <label for="prospect_role">Prospect role</label>
+          <input
+            id="prospect_role"
+            name="prospect_role"
+            type="text"
+            autocomplete="organization-title"
+            placeholder="e.g. VP of Supply Chain"
+          />
+        </div>
+        <div>
+          <label for="ae_product">What you sell</label>
+          <input
+            id="ae_product"
+            name="ae_product"
+            type="text"
+            placeholder="e.g. Supplier risk intelligence platform"
+          />
+        </div>
+        <div class="actions">
+          <button type="submit" id="submit-btn">Generate 5 openers</button>
+        </div>
+      </form>
+
+      <div id="loading" class="loading" aria-live="polite">
+        <span class="spinner" aria-hidden="true"></span>
+        Analyzing 10-K filing and generating openers. This takes about 30 seconds.
+      </div>
+
+      <div id="error" class="error" role="alert"></div>
+
+      <section id="results" class="results" hidden>
+        <h2>Your openers</h2>
+        <div id="cards"></div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      const API = "http://localhost:8000/generate";
+
+      const form = document.getElementById("signal-form");
+      const submitBtn = document.getElementById("submit-btn");
+      const loadingEl = document.getElementById("loading");
+      const errorEl = document.getElementById("error");
+      const resultsSection = document.getElementById("results");
+      const cardsEl = document.getElementById("cards");
+
+      function showLoading(show) {
+        loadingEl.classList.toggle("is-visible", show);
+        submitBtn.disabled = show;
+      }
+
+      function showError(message) {
+        errorEl.textContent = message;
+        errorEl.classList.add("is-visible");
+      }
+
+      function clearError() {
+        errorEl.textContent = "";
+        errorEl.classList.remove("is-visible");
+      }
+
+      function parseErrorDetail(data) {
+        if (!data) return "Request failed.";
+        if (typeof data.detail === "string") return data.detail;
+        if (Array.isArray(data.detail) && data.detail[0]?.msg) {
+          return data.detail.map((d) => d.msg).join(" ");
+        }
+        if (typeof data.detail === "object" && data.detail !== null) {
+          return JSON.stringify(data.detail);
+        }
+        return "Something went wrong.";
+      }
+
+      async function copyText(btn, text) {
+        try {
+          await navigator.clipboard.writeText(text);
+          const prev = btn.textContent;
+          btn.textContent = "Copied";
+          btn.classList.add("copied");
+          setTimeout(function () {
+            btn.textContent = prev;
+            btn.classList.remove("copied");
+          }, 2000);
+        } catch (e) {
+          btn.textContent = "Copy failed";
+          setTimeout(function () {
+            btn.textContent = "Copy opener";
+          }, 2000);
+        }
+      }
+
+      function renderResults(openers) {
+        cardsEl.innerHTML = "";
+        openers.forEach(function (opener, i) {
+          const num = String(i + 1).padStart(2, "0");
+          const card = document.createElement("article");
+          card.className = "card";
+          card.innerHTML =
+            '<div class="card-top">' +
+            '<span class="badge">' +
+            num +
+            "</span>" +
+            '<span class="signal"></span>' +
+            "</div>" +
+            '<p class="opener-text"></p>' +
+            '<p class="why"></p>' +
+            '<button type="button" class="copy-btn">Copy opener</button>';
+
+          card.querySelector(".signal").textContent = opener.signal || "";
+          card.querySelector(".opener-text").textContent = opener.text || "";
+          card.querySelector(".why").textContent = opener.why
+            ? "Why: " + opener.why
+            : "";
+
+          const copyBtn = card.querySelector(".copy-btn");
+          copyBtn.addEventListener("click", function () {
+            copyText(copyBtn, opener.text || "");
+          });
+
+          cardsEl.appendChild(card);
+        });
+
+        resultsSection.hidden = false;
+        resultsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+        clearError();
+        resultsSection.hidden = true;
+        cardsEl.innerHTML = "";
+
+        const company_name = document.getElementById("company_name").value.trim();
+        const prospect_name = document.getElementById("prospect_name").value.trim();
+        const prospect_role = document.getElementById("prospect_role").value.trim();
+        const ae_product = document.getElementById("ae_product").value.trim();
+
+        if (!company_name || !prospect_name) {
+          showError("Please enter both company name and prospect name.");
+          return;
+        }
+
+        showLoading(true);
+
+        try {
+          const res = await fetch(API, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              company_name: company_name,
+              prospect_name: prospect_name,
+              prospect_role: prospect_role,
+              ae_product: ae_product,
+            }),
+          });
+
+          const data = await res.json().catch(function () {
+            return null;
+          });
+
+          if (!res.ok) {
+            throw new Error(parseErrorDetail(data) || "Request failed.");
+          }
+
+          if (!data.openers || !Array.isArray(data.openers)) {
+            throw new Error("Unexpected response from server.");
+          }
+
+          renderResults(data.openers);
+        } catch (err) {
+          showError(err.message || "Network error. Is the API running at http://localhost:8000?");
+        } finally {
+          showLoading(false);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
