@@ -20,7 +20,7 @@ USER_AGENT = "Mozilla/5.0 Signal-App contact@signal.com"
 
 SEARCH_URL = (
     "https://efts.sec.gov/LATEST/search-index"
-    "?q={query}&dateRange=custom&startdt=2023-01-01&enddt=2024-12-31&forms=10-K"
+    "?q={query}&dateRange=custom&startdt=2023-01-01&enddt=2025-12-31&forms=10-K"
 )
 SUBMISSIONS_URL = "https://data.sec.gov/submissions/CIK{cik_padded}.json"
 ARCHIVE_BASE = "https://www.sec.gov/Archives/edgar/data"
