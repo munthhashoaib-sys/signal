@@ -28,6 +28,8 @@ risk, a financial metric, a strategic initiative, or a direct quote from managem
 - Be warm and conversational in tone, like a curious and informed peer
 - Be between 2 and 4 sentences long
 - Never mention the sales rep's product directly
+- Always start each opener with "Hey [first name]," using only the first word of the prospect name
+- Never use dashes or em dashes in any opener. Use plain punctuation only.
 - Never be generic. Phrases like "I noticed your company is growing" are forbidden
 - Feel like it was written by someone who actually read the filing
 
