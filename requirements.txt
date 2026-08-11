@@ -8,3 +8,4 @@ lxml
 openai
 faiss-cpu
 anthropic
+supabase

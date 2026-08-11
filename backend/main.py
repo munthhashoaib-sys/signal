@@ -14,6 +14,7 @@ from backend.generator import generate_openers
 from backend.judge import judge_chunks, needs_fallback
 from backend.opener_judge import judge_openers
 from backend.reviser import revise_openers
+from backend.database import save_session, save_chunks, save_openers
 
 app = FastAPI()
 
@@ -133,6 +134,11 @@ def generate(req: GenerateRequest):
         final_openers.sort(key=lambda x: x.get("score", 0), reverse=True)
 
         print(f"Pipeline complete. Returning {len(final_openers)} openers.")
+
+        # Save to Supabase
+        company_id, session_id = save_session(req.company_name, req.prospect_name, req.prospect_role, req.linkedin_url, req.ae_product, req.ae_company, req.ae_role)
+        save_chunks(session_id, approved_chunks)
+        save_openers(session_id, final_openers)
 
         return {
             "openers": final_openers,
