@@ -3,7 +3,7 @@
 AI-powered cold email opener generator for B2B sales reps. Signal reads a company's SEC 10-K annual filing and generates five hyper-specific cold email openers grounded in real filing disclosures — replacing 30 minutes of manual research with a 60-second automated pipeline.
 
 **Live product:** https://signal-kappa-two.vercel.app  
-**Backend API:** https://signal-m4zs.onrender.com/health
+**Backend API:** https://signal-project.onrender.com/health
 
 ---
 
