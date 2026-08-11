@@ -200,6 +200,9 @@ function renderResults(data, company, prospectName) {
       <div class="result-text">${text}</div>
       ${why ? `<div class="result-why">${why}</div>` : ""}
       ${weakness ? `<div class="result-weakness">Suggested improvement: ${weakness}</div>` : ""}
+      <div class="result-audit">
+        <a class="audit-link" href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&company=${encodeURIComponent(company)}&type=10-K&dateb=&owner=include&count=5&search_text=" target="_blank">Verify source: View ${company} 10-K filings on SEC EDGAR</a>
+      </div>
       <div class="result-actions">
         <button class="copy-btn" onclick="copyOpener(this, \`${text.replace(/`/g, "'")}\`)">Copy opener</button>
       </div>
