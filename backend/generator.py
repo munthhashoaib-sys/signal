@@ -59,6 +59,8 @@ def generate_openers(
     company_name: str,
     prospect_role: str,
     ae_product: str,
+    ae_company: str = "",
+    ae_role: str = "",
     rag_context: str,
 ) -> Dict[str, Any]:
     """
@@ -71,7 +73,9 @@ def generate_openers(
     user_prompt = f"""Prospect name: {prospect_name}
 Company: {company_name}
 Prospect role: {prospect_role}
-What the rep sells (for your situational awareness only — do not mention this in the openers): {ae_product}
+What the rep sells: {ae_product}
+Rep company: {ae_company}
+Rep role: {ae_role}
 
 10-K excerpts to use:
 {rag_context}

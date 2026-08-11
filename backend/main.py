@@ -31,6 +31,8 @@ class GenerateRequest(BaseModel):
     prospect_name: str
     prospect_role: str
     ae_product: str
+    ae_company: str = ""
+    ae_role: str = ""
 
 @app.get("/health")
 def health():
@@ -93,7 +95,9 @@ def generate(req: GenerateRequest):
             company_name=req.company_name,
             prospect_role=req.prospect_role,
             ae_product=req.ae_product,
-            rag_context=rag_context
+            rag_context=rag_context,
+            ae_company=req.ae_company,
+            ae_role=req.ae_role
         )
 
         openers = result.get("openers", [])
