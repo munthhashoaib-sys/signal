@@ -26,6 +26,7 @@ app.add_middleware(
 )
 
 class GenerateRequest(BaseModel):
+    linkedin_url: str = ""
     company_name: str
     prospect_name: str
     prospect_role: str
