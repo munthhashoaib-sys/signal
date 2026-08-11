@@ -59,9 +59,9 @@ def generate_openers(
     company_name: str,
     prospect_role: str,
     ae_product: str,
+    rag_context: str,
     ae_company: str = "",
     ae_role: str = "",
-    rag_context: str,
 ) -> Dict[str, Any]:
     """
     Build prompts, call Claude, and return parsed JSON as a dict with an "openers" list.
