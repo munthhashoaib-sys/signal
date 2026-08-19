@@ -58,6 +58,11 @@
   <h1>Signal</h1>
   <div class="tagline">10K intelligence for sales reps. Reads SEC filings, generates grounded cold email openers.</div>
 
+    <div style="display:flex;gap:8px;margin-bottom:1rem;">
+      <button id="tab-generate" onclick="switchTab('generate')" style="flex:1;padding:10px 16px;background:#1a1a1a;color:white;border:none;border-radius:7px;font-size:13.5px;font-weight:600;cursor:pointer;">Generate openers</button>
+      <button id="tab-how" onclick="switchTab('how')" style="flex:1;padding:10px 16px;background:white;color:#666;border:1px solid #ddd;border-radius:7px;font-size:13.5px;font-weight:500;cursor:pointer;">How it works</button>
+    </div>
+  <div id="generate-content">
   <div class="card">
     <div class="field-row" style="margin-bottom:1rem">
       <div class="field">
@@ -107,7 +112,40 @@
 
   <div class="error" id="error"></div>
 
-  <div id="results"></div>
+  </div>
+
+    <div id="how-it-works-tab" style="display:none">
+      <div style="background:white;border:1px solid #e0e0e0;border-radius:10px;padding:1.5rem;margin-bottom:1rem;">
+        <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#999;margin-bottom:1.25rem;">What happens when you hit Generate</div>
+        <div style="display:flex;gap:16px;padding:14px 0;border-bottom:1px solid #f0f0f0;"><div style="width:28px;height:28px;background:#1a1a1a;color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;">1</div><div><div style="font-size:14px;font-weight:600;color:#1a1a1a;margin-bottom:3px;">Fetch the 10-K from SEC EDGAR</div><div style="font-size:13px;color:#666;line-height:1.6;">Signal calls the US government filing database, finds the company by name, retrieves their most recent annual report, and extracts readable text. No PDF uploads required.</div></div></div>
+        <div style="display:flex;gap:16px;padding:14px 0;border-bottom:1px solid #f0f0f0;"><div style="width:28px;height:28px;background:#1a1a1a;color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;">2</div><div><div style="font-size:14px;font-weight:600;color:#1a1a1a;margin-bottom:3px;">Split into searchable chunks</div><div style="font-size:13px;color:#666;line-height:1.6;">The filing is split into 500-word sections with 100-word overlap. This makes the document searchable by meaning, not just keywords.</div></div></div>
+        <div style="display:flex;gap:16px;padding:14px 0;border-bottom:1px solid #f0f0f0;"><div style="width:28px;height:28px;background:#1a1a1a;color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;">3</div><div><div style="font-size:14px;font-weight:600;color:#1a1a1a;margin-bottom:3px;">Find the most relevant sections</div><div style="font-size:13px;color:#666;line-height:1.6;">Each section is converted into a mathematical representation of its meaning. Signal searches for sections most relevant to a sales conversation — risks, strategic priorities, financial pressures.</div></div></div>
+        <div style="display:flex;gap:16px;padding:14px 0;border-bottom:1px solid #f0f0f0;"><div style="width:28px;height:28px;background:#ec4899;color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;">4</div><div><div style="font-size:14px;font-weight:600;color:#1a1a1a;margin-bottom:3px;">Chunk Judge scores each section</div><div style="font-size:13px;color:#666;line-height:1.6;">A second AI evaluates every retrieved section against four criteria: specificity, role relevance, novelty, and product fit. Sections scoring below 7 out of 10 are rejected before anything reaches Claude.</div></div></div>
+        <div style="display:flex;gap:16px;padding:14px 0;border-bottom:1px solid #f0f0f0;"><div style="width:28px;height:28px;background:#1a1a1a;color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;">5</div><div><div style="font-size:14px;font-weight:600;color:#1a1a1a;margin-bottom:3px;">Generate 5 openers with Claude</div><div style="font-size:13px;color:#666;line-height:1.6;">Only approved sections reach Claude. Claude reads the filing evidence alongside your prospect details and writes five cold email openers grounded in specific, verifiable filing disclosures.</div></div></div>
+        <div style="display:flex;gap:16px;padding:14px 0;border-bottom:1px solid #f0f0f0;"><div style="width:28px;height:28px;background:#ec4899;color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;">6</div><div><div style="font-size:14px;font-weight:600;color:#1a1a1a;margin-bottom:3px;">Opener Judge scores each opener</div><div style="font-size:13px;color:#666;line-height:1.6;">Every opener is scored against specificity, non-obviousness, conversational tone, and role fit. Scoring 8 or above is approved. Lower scores are flagged with improvements or sent for rewriting.</div></div></div>
+        <div style="display:flex;gap:16px;padding:14px 0;"><div style="width:28px;height:28px;background:#f97316;color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;">7</div><div><div style="font-size:14px;font-weight:600;color:#1a1a1a;margin-bottom:3px;">Reviser rewrites rejected openers</div><div style="font-size:13px;color:#666;line-height:1.6;">If an opener is rejected, the system reads the judge feedback and rewrites only that opener with a targeted correction. It does not regenerate all five — just the one that failed.</div></div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div style="background:white;border:1px solid #e0e0e0;border-radius:10px;padding:1.25rem;">
+          <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#ec4899;margin-bottom:4px;">Chunk Judge</div>
+          <div style="font-size:12px;color:#999;margin-bottom:14px;">Runs before generation. Pass threshold: 7 out of 10.</div>
+          <div style="margin-bottom:10px;"><div style="font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:2px;">Specificity</div><div style="font-size:12px;color:#666;line-height:1.5;">Names a real risk, metric, or initiative. Generic language scores below 5.</div></div>
+          <div style="margin-bottom:10px;"><div style="font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:2px;">Role relevance</div><div style="font-size:12px;color:#666;line-height:1.5;">Meaningful to this prospect's specific function and accountability.</div></div>
+          <div style="margin-bottom:10px;"><div style="font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:2px;">Novelty</div><div style="font-size:12px;color:#666;line-height:1.5;">Goes beyond press release knowledge. Homepage-level information scores below 5.</div></div>
+          <div><div style="font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:2px;">Product fit</div><div style="font-size:12px;color:#666;line-height:1.5;">Connects to what the rep is selling. Irrelevant context weakens the opener.</div></div>
+        </div>
+        <div style="background:white;border:1px solid #e0e0e0;border-radius:10px;padding:1.25rem;">
+          <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:#ec4899;margin-bottom:4px;">Opener Judge</div>
+          <div style="font-size:12px;color:#999;margin-bottom:14px;">Runs after generation. Pass threshold: 8 out of 10.</div>
+          <div style="margin-bottom:10px;"><div style="font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:2px;">Specificity</div><div style="font-size:12px;color:#666;line-height:1.5;">References a named filing detail. Vague enough to apply to any company is rejected.</div></div>
+          <div style="margin-bottom:10px;"><div style="font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:2px;">Non-obviousness</div><div style="font-size:12px;color:#666;line-height:1.5;">The prospect would not know this from their homepage or LinkedIn.</div></div>
+          <div style="margin-bottom:10px;"><div style="font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:2px;">Conversational tone</div><div style="font-size:12px;color:#666;line-height:1.5;">Sounds like a curious peer. Phrases like I noticed are flagged and capped at 5.</div></div>
+          <div><div style="font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:2px;">Role fit</div><div style="font-size:12px;color:#666;line-height:1.5;">Relevant to this person's accountability. Role mismatch scores below 5.</div></div>
+        </div>
+      </div>
+    </div>
+
+<div id="results"></div>
 </div>
 
 <script>
@@ -231,6 +269,32 @@ function showError(msg) {
 
 function clearError() {
   document.getElementById("error").style.display = "none";
+}
+
+function switchTab(tab) {
+  var generateContent = document.getElementById('generate-content');
+  var howContent = document.getElementById('how-it-works-tab');
+  var btnGenerate = document.getElementById('tab-generate');
+  var btnHow = document.getElementById('tab-how');
+  if (tab === 'generate') {
+    generateContent.style.display = 'block';
+    howContent.style.display = 'none';
+    btnGenerate.style.background = '#1a1a1a';
+    btnGenerate.style.color = 'white';
+    btnGenerate.style.border = 'none';
+    btnHow.style.background = 'white';
+    btnHow.style.color = '#666';
+    btnHow.style.border = '1px solid #ddd';
+  } else {
+    generateContent.style.display = 'none';
+    howContent.style.display = 'block';
+    btnGenerate.style.background = 'white';
+    btnGenerate.style.color = '#666';
+    btnGenerate.style.border = '1px solid #ddd';
+    btnHow.style.background = '#1a1a1a';
+    btnHow.style.color = 'white';
+    btnHow.style.border = 'none';
+  }
 }
 </script>
 </body>
