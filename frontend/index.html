@@ -199,7 +199,7 @@ function renderResults(data, company, prospectName) {
       </div>
       <div class="result-text">${text}</div>
       ${why ? `<div class="result-why">${why}</div>` : ""}
-      ${weakness ? `<div class="result-weakness">Suggested improvement: ${weakness}</div>` : ""}
+      ${weakness ? `<div class="result-weakness"><strong>Suggested improvements</strong><ul style="margin:6px 0 0 16px;padding:0;">${weakness.split(/\n|•|-/).filter(s=>s.trim()).map(s=>`<li style="margin-bottom:4px;font-size:12px;">${s.trim()}</li>`).join("")}</ul></div>` : ""}
       <div class="result-audit">
         <a class="audit-link" href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&company=${encodeURIComponent(company)}&type=10-K&dateb=&owner=include&count=5&search_text=" target="_blank">Verify source: View ${company} 10-K filings on SEC EDGAR</a>
       </div>
